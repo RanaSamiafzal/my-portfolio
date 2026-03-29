@@ -1,13 +1,13 @@
-import React from 'react';
-import useTypewriter from '../hooks/useTypewriter';
-import profileImg from '../assets/p4.jpg';
+import React from "react";
+import useTypewriter from "../hooks/useTypewriter";
+import profileImg from "../assets/p4.jpg";
 
 const Hero = () => {
   const titles = [
-    'Full Stack Developer & Creative Technologist',
-    'MERN Stack Engineer',
-    'AI Enthusiast & Builder',
-    'Cinematic Developer',
+    "Full Stack Developer & Creative Technologist",
+    "MERN Stack Engineer",
+    "AI Enthusiast & Builder",
+    "Cinematic Developer",
   ];
   const typingText = useTypewriter(titles);
 
@@ -23,17 +23,34 @@ const Hero = () => {
         </h1>
         <div className="hero-title">{typingText}</div>
         <p className="hero-desc">
-          Building <strong>scalable web applications</strong> with the MERN stack while blending a cinematic eye from years of creative production. I turn complex problems into <span className="highlight">elegant digital experiences</span>.
+          Building <strong>scalable web applications</strong> with the MERN
+          stack while blending a cinematic eye from years of creative
+          production. I turn complex problems into{" "}
+          <span className="highlight">elegant digital experiences</span>.
         </p>
         <div className="hero-actions">
           <a href="#projects" className="btn-primary">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+            >
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
             View My Work
           </a>
           <a href="#contact" className="btn-secondary">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
             Get in Touch
@@ -60,7 +77,9 @@ const Hero = () => {
           <div className="hero-img-bg"></div>
           <div className="hero-img-card card-1">
             <div className="card-label">Status</div>
-            <div className="card-val"><span className="card-dot"></span>Open to Work</div>
+            <div className="card-val">
+              <span className="card-dot"></span>Open to Work
+            </div>
           </div>
           <div className="hero-img-card card-2">
             <div className="card-label">Stack</div>

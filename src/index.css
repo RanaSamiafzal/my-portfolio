@@ -867,11 +867,11 @@ footer {
 
   /* ── MOBILE SECTIONS ── */
   #hero { 
-    grid-template-columns: 1fr; 
-    padding: 100px 20px 40px;
-    text-align: center;
+    padding: 120px 24px 60px;
     min-height: auto;
     overflow: hidden;
+    grid-template-columns: 1fr;
+    text-align: center;
   }
   .hero-left { display: flex; flex-direction: column; align-items: center; width: 100%; }
   .hero-tag { justify-content: center; width: 100%; margin-bottom: 20px; }
@@ -904,14 +904,22 @@ footer {
   h2.section-title { font-size: 2.2rem; word-break: break-word; }
   .section-sub { margin-bottom: 40px; }
   
-  .about-grid { grid-template-columns: 1fr; gap: 40px; }
+  .about-grid { grid-template-columns: 1fr; gap: 40px; text-align: center; }
   .about-links { justify-content: center; flex-wrap: wrap; }
   
-  .skills-grid { grid-template-columns: 1fr; gap: 16px; }
+  .skills-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .skill-card { padding: 16px; }
+  .skill-card-icon { font-size: 1.2rem; margin-bottom: 8px; }
+  .skill-card-title { font-size: 0.85rem; margin-bottom: 12px; }
+  .skill-tag { font-size: 0.55rem; padding: 4px 8px; }
+  
+  .exp-card { padding: 24px; }
+  .exp-header { flex-direction: column; gap: 8px; align-items: center; text-align: center; }
+  .exp-role { font-size: 1.1rem; }
   
   .projects-grid { grid-template-columns: 1fr; gap: 20px; }
   .project-card { padding: 24px; }
-  .project-card.featured { grid-template-columns: 1fr; padding: 20px; }
+  .project-card.featured { grid-column: span 1; grid-template-columns: 1fr; padding: 20px; }
   .featured-code-snippet { display: none; } /* Hide complex snippet on small mobile */
   
   .contact-wrap { grid-template-columns: 1fr; gap: 32px; }
