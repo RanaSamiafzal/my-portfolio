@@ -19,9 +19,7 @@ const Hero = () => {
       <div className="hero-left">
         <div className="hero-tag">Available for Opportunities</div>
         <h1 className="hero-name">
-          Rana<br />
-          Muhammad<br />
-          <span className="accent">Sami.</span>
+          Rana Muhammad <span className="accent">Sami.</span>
         </h1>
         <div className="hero-title">{typingText}</div>
         <p className="hero-desc">
