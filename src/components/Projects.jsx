@@ -22,7 +22,7 @@ const Projects = () => {
       name: "Modern Cinematic Portfolio",
       desc: "A premium, immersive personal portfolio built with a focus on rich aesthetics, smooth animations, and mobile-first design. Features a custom grain overlay, dynamic cursor, and scroll-reveal effects.",
       stack: ["HTML5", "Tailwind CSS", "JavaScript", "Cinematic UI"],
-      links: { github: "https://github.com/RanaSamiafzal/my-portfolio", live: "#" }
+      links: { github: "https://github.com/RanaSamiafzal/my-portfolio", live: "https://my-portfolio-peach-three-14.vercel.app/" }
     },
     {
       id: "04",
