@@ -22,7 +22,7 @@ const Projects = () => {
       name: "Modern Cinematic Portfolio",
       desc: "A premium, immersive personal portfolio built with a focus on rich aesthetics, smooth animations, and mobile-first design. Features a custom grain overlay, dynamic cursor, and scroll-reveal effects.",
       stack: ["HTML5", "Tailwind CSS", "JavaScript", "Cinematic UI"],
-      links: { github: "https://github.com/RanaSamiafzal/my-portfolio", live: "https://my-portfolio-peach-three-14.vercel.app/" }
+      links: { github: "https://github.com/RanaSamiafzal/my-portfolio", live: "#" }
     },
     {
       id: "04",
@@ -44,6 +44,13 @@ const Projects = () => {
       desc: "A modern personal finance dashboard to track income & expenses, set budgets, and gain AI-powered insights into spending habits. Features interactive charts, transaction management, and responsive design.",
       stack: ["React.js", "Genkit AI", "Firebase", "Charts", "Budget Tracking"],
       links: { github: "https://github.com/RanaSamiafzal", live: "SPENDWISE_LIVE_URL" }
+    },
+    {
+      id: "07",
+      name: "React Portfolio Migration",
+      desc: "A professional migration of a static portfolio to a modern React & Tailwind architecture. This project showcases modular component design, custom hooks for animations, and automated Vercel deployment.",
+      stack: ["React", "Vite", "Tailwind CSS", "Vercel"],
+      links: { github: "https://github.com/RanaSamiafzal/my-portfolio", live: "https://my-portfolio-peach-three-14.vercel.app/" }
     }
   ];
 
