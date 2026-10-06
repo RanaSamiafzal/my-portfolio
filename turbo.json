@@ -5,7 +5,15 @@
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**"],
-      "env": ["AUTH_*", "DATABASE_URL", "GITHUB_TOKEN", "SMTP_*", "MAIL_*", "NEXT_PUBLIC_*"]
+      "env": [
+        "AUTH_*",
+        "BLOB_*",
+        "DATABASE_URL",
+        "GITHUB_TOKEN",
+        "SMTP_*",
+        "MAIL_*",
+        "NEXT_PUBLIC_*"
+      ]
     },
     "dev": { "cache": false, "persistent": true },
     "lint": {},
