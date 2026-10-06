@@ -1,4 +1,17 @@
 node_modules
+.next
+.turbo
 dist
+out
+.env
+.env*.local
 .DS_Store
 static_backup
+*.tsbuildinfo
+next-env.d.ts
+.vercel
+apps/web/public/uploads
+
+.vercel-auth.hdr
+.vercel-token.tmp
+.env*
