@@ -6,6 +6,7 @@ import { SmoothScroll } from "@/components/smooth-scroll";
 import { loadSettings } from "@/lib/content";
 import { siteUrl } from "@/lib/site";
 import "@/styles/global.css";
+import scrollEntrySource from "@/lib/scroll-entry.js?raw";
 import type { SiteSettings } from "@repo/db";
 
 interface Props {
@@ -68,24 +69,28 @@ const themeStyle = [
     <meta name="twitter:image" content={new URL(settings.hero.desk, siteUrl).href} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     {Astro.url.pathname.startsWith("/admin") && <meta name="robots" content="noindex, nofollow" />}
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preload" href="/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin />
     <script is:inline>
       if (location.pathname === "/" && !matchMedia("(prefers-reduced-motion: reduce)").matches && !location.hash &&
           performance.getEntriesByType("navigation")[0]?.type !== "back_forward") {
         document.documentElement.dataset.pageIntro = "pending";
         document.documentElement.dataset.entryScroll = "true";
-        // Fail open if the client module cannot load. An active intro has no timer.
-        setTimeout(() => {
+        document.documentElement.dataset.entryRestoration = history.scrollRestoration;
+        history.scrollRestoration = "manual";
+        if (performance.getEntriesByType("navigation")[0]?.type === "reload") {
+          document.documentElement.dataset.entryReload = "true";
+        }
+        // The inline controller runs while parsing the body, before deferred modules.
+        // If it fails, reveal the document when parsing finishes, never on a download timer.
+        document.addEventListener("DOMContentLoaded", () => {
           if (document.documentElement.dataset.pageIntro === "pending") {
             delete document.documentElement.dataset.pageIntro;
             delete document.documentElement.dataset.entryScroll;
+            history.scrollRestoration = document.documentElement.dataset.entryRestoration === "manual" ? "manual" : "auto";
+            delete document.documentElement.dataset.entryRestoration;
+            delete document.documentElement.dataset.entryReload;
           }
-        }, 5000);
+        }, { once: true });
       }
     </script>
     <style is:global>
@@ -113,7 +118,7 @@ const themeStyle = [
       <div class="entry-prompt"><button type="button" data-entry-enter aria-label="Enter portfolio">Scroll to reveal <span aria-hidden="true">↓</span></button><p>Engineering the complex. Making it feel simple.</p></div>
       <span class="entry-index" aria-hidden="true">01 / INTRO</span>
     </section>}
-    <SmoothScroll client:load />
+    {Astro.url.pathname !== "/" && <SmoothScroll client:load />}
     <div id="entry-scroll-shell">
       <div class="page-viewport">
         <div id="page-stage">
@@ -125,6 +130,11 @@ const themeStyle = [
         </div>
       </div>
     </div>
+    {Astro.url.pathname === "/" && <script is:inline set:html={`(() => {
+${scrollEntrySource.replace("export function", "function")}
+const stage = document.getElementById("page-stage");
+if (stage) initScrollEntry(stage, () => window.dispatchEvent(new Event("portfolio:intro-complete")));
+})();`} />}
     <script type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
     <script>
       import { initPageMotion } from "@/lib/page-motion";

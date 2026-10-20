@@ -1,21 +1,28 @@
-/** One native-scroll portal. Its runway is removed without moving the visible page. */
-export function initScrollEntry(stage: HTMLElement, onComplete: () => void) {
+/**
+ * Critical, dependency-free intro. Also embedded inline by BaseLayout so deferred
+ * modules, hydration and WebGL cannot delay the first usable frame.
+ * @param {HTMLElement} stage
+ * @param {() => void} onComplete
+ */
+export function initScrollEntry(stage, onComplete) {
   const root = document.documentElement;
   const entry = document.getElementById("scroll-entry");
   const ring = entry?.querySelector("circle");
-  const heading = entry?.querySelector<HTMLElement>(".entry-heading");
-  const prompt = entry?.querySelector<HTMLElement>(".entry-prompt");
-  const core = entry?.querySelector<HTMLElement>(".entry-core");
-  const brand = entry?.querySelector<HTMLElement>(".entry-brand");
-  const index = entry?.querySelector<HTMLElement>(".entry-index");
+  const heading = /** @type {HTMLElement | null | undefined} */ (entry?.querySelector(".entry-heading"));
+  const prompt = /** @type {HTMLElement | null | undefined} */ (entry?.querySelector(".entry-prompt"));
+  const core = /** @type {HTMLElement | null | undefined} */ (entry?.querySelector(".entry-core"));
+  const brand = /** @type {HTMLElement | null | undefined} */ (entry?.querySelector(".entry-brand"));
+  const index = /** @type {HTMLElement | null | undefined} */ (entry?.querySelector(".entry-index"));
   const preference = matchMedia("(prefers-reduced-motion: reduce)");
   let active = false;
   let frame = 0;
   let distance = 0;
   let progress = 0;
   let lastPaint = -1;
-  const clamp = (n: number) => Math.max(0, Math.min(1, n));
-  const smooth = (n: number) => { const p = clamp(n); return p * p * (3 - 2 * p); };
+  /** @param {number} n */
+  const clamp = (n) => Math.max(0, Math.min(1, n));
+  /** @param {number} n */
+  const smooth = (n) => { const p = clamp(n); return p * p * (3 - 2 * p); };
 
   const paint = () => {
     frame = 0;
@@ -54,6 +61,11 @@ export function initScrollEntry(stage: HTMLElement, onComplete: () => void) {
     stage.style.removeProperty("clip-path"); stage.style.removeProperty("transform"); stage.style.removeProperty("transform-origin");
     root.style.removeProperty("--entry-distance");
     delete root.dataset.pageIntro; delete root.dataset.entryScroll;
+    if (root.dataset.entryRestoration) {
+      history.scrollRestoration = root.dataset.entryRestoration === "manual" ? "manual" : "auto";
+      delete root.dataset.entryRestoration;
+    }
+    delete root.dataset.entryReload;
   };
   function finish(focus = false) {
     if (!active) return;
@@ -69,6 +81,8 @@ export function initScrollEntry(stage: HTMLElement, onComplete: () => void) {
   }
   const start = (replay = false) => {
     if (!entry || preference.matches || document.hidden) { clear(); return; }
+    // Reloads deliberately restart the intro; history/hash navigation keeps its destination.
+    if (!replay && root.dataset.entryReload === "true") window.scrollTo({ top: 0, behavior: "instant" });
     // Preserve hash destinations and browser-restored scroll positions on initial load.
     if (!replay && (location.hash || scrollY > 2)) { clear(); return; }
     active = true; progress = 0; lastPaint = -1;
@@ -79,7 +93,7 @@ export function initScrollEntry(stage: HTMLElement, onComplete: () => void) {
     stage.inert = true;
     if (replay) {
       window.scrollTo({ top: 0, behavior: "instant" });
-      entry.querySelector<HTMLButtonElement>("[data-entry-enter]")?.focus({ preventScroll: true });
+      entry.querySelector("button[data-entry-enter]")?.focus({ preventScroll: true });
     }
     paint();
   };

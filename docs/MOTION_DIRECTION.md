@@ -119,3 +119,11 @@ Verification: visually reviewed desktop and mobile gallery captures. Browser che
 ### Larger sculpture at the same anchor
 
 The sculpture canvas expands around its unchanged center from 304 to 448px on desktop, 228 to 324px on tablet and 188 to 252px on mobile. Only CSS size/bleed values change; all existing cursor guidance, click/drag morphing, automatic cycling and motion preferences retain their implementation.
+
+## Reliable production intro and lighter first load
+
+The old head bootstrap could clear the pending intro after five seconds while external fonts or deferred JavaScript were still loading. Browser-restored scroll on refresh could also bypass it. The dependency-free controller now runs inline from one JavaScript source file, before hydration or WebGL. The remaining page-motion module observes its completion event. The fail-open guard runs after document parsing instead of racing asset downloads. A normal homepage reload restarts at the opening circle; hash destinations, back/forward navigation, reduced motion and no-JavaScript access retain their bypass behavior.
+
+Manrope and Geist Mono WOFF2 fonts are served locally with their OFL licenses; Manrope is preloaded. The homepage no longer hydrates the smooth-scroll component that immediately disabled itself there. The static workstation uses responsive WebP sources (26,144 bytes at 840px, 66,398 bytes at 1672px versus the original 1,601,796-byte PNG), retaining the original PNG fallback, dimensions and silhouette mask. The independent sculpture hydrates during browser idle time with a 1.5-second timeout, preserving its interaction and anchor.
+
+Verification: desktop/mobile checks passed first-visit reveal, reversible native scrolling, overshoot handoff, reload from the middle of the page, skip, project anchor, WebP selection and no overflow. With every external script request blocked, the intro stayed visible beyond the former five-second timeout and its Enter button completed the reveal. Reduced motion, no JavaScript, hash and inner-page bypass checks passed; normal browsing had zero page errors. Astro check passed across 102 files with zero diagnostics and the Vercel adapter production build passed.

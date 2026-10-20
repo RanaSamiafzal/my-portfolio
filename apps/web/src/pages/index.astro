@@ -40,8 +40,8 @@ const serviceProof = ["/work/brandly", "/work/aide", "/work/brandly"];
           <div class="cinematic-stage">
             <h1 id="hero-heading" class="cinematic-title"><span class="cinematic-outline" data-text="Creative">Creative</span><span>Engineer</span></h1>
             {hero.desk === "/hero-workstation.png" ? <>
-              <div class="cinematic-portrait workstation-static"><img src={hero.desk} width="1672" height="941" fetchpriority="high" alt={`${profile.name} working at a laptop, with a phone and clock on the desk`} /></div>
-              <HeroSculpture client:load />
+              <div class="cinematic-portrait workstation-static"><picture><source type="image/webp" srcset="/hero-workstation-840.webp 840w, /hero-workstation-1672.webp 1672w" sizes="(max-width: 767px) 100vw, (max-width: 1600px) 90vw, 1488px" /><img src={hero.desk} width="1672" height="941" fetchpriority="high" alt={`${profile.name} working at a laptop, with a phone and clock on the desk`} /></picture></div>
+              <HeroSculpture client:idle={{ timeout: 1500 }} />
             </> : <div class="cinematic-portrait"><KineticScene client:load src={hero.desk} mask={hero.mask} matte={hero.matte} cinematic /></div>}
             <p class="cinematic-caption cinematic-caption-left">Engineering the complex.<br />Making it feel simple.</p>
             <p class="cinematic-caption cinematic-caption-right">Based in Lahore.<br />Building for everywhere.</p>

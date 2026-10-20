@@ -1,5 +1,3 @@
-import { initScrollEntry } from "./scroll-entry";
-
 /** Native, interruptible motion. Server content is always readable without JS. */
 export function initPageMotion() {
   const stage = document.getElementById("page-stage");
@@ -10,7 +8,6 @@ export function initPageMotion() {
   const seen = new WeakSet<Element>();
   const observed = new WeakSet<Element>();
   const active = new Set<HTMLElement>();
-  let entrance: ReturnType<typeof initScrollEntry> | undefined;
   let frame = 0;
   let registration = 0;
   const play = (el: Element, frames: Keyframe[], duration = 850, delay = 0) => {
@@ -53,7 +50,7 @@ export function initPageMotion() {
     for (const entry of entries) {
       if (!entry.isIntersecting) continue;
       observer.unobserve(entry.target);
-      if (entrance?.active) pending.add(entry.target);
+      if (document.documentElement.hasAttribute("data-page-intro")) pending.add(entry.target);
       else if (entry.boundingClientRect.bottom > 0) reveal(entry.target);
       else seen.add(entry.target);
     }
@@ -92,7 +89,7 @@ export function initPageMotion() {
     });
     for (const element of active) if (!element.isConnected) active.delete(element);
   };
-  entrance = initScrollEntry(stage, flushPending);
+  window.addEventListener("portfolio:intro-complete", flushPending);
   register();
   const mutations = new MutationObserver(() => {
     if (!registration) registration = requestAnimationFrame(register);
