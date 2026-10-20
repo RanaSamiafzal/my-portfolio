@@ -47,11 +47,14 @@ SEO routes: `/sitemap.xml`, `/robots.txt`, `/llms.txt`. Agents can read the cont
 ```sh
 npm run typecheck
 npm run build
+node scripts/check-proxy-origins.mjs
 ```
 
 ## Vercel
 
 Set the project Root Directory to `apps/web` and the framework to **Astro**. Build with `npm run build`; the Vercel adapter creates `.vercel/output`. `astro preview` cannot serve the Vercel adapter locally; use `npm run dev` for development and a Vercel preview for deployment validation.
+
+The SSR host allowlist in `apps/web/astro.config.mjs` includes the portfolio aliases and exact Vercel deployment/branch hostnames. Add any new public domain there (or set `PUBLIC_SITE_URL`) so login, logout and CMS actions compare against the public HTTPS origin behind the proxy. Origin checks remain enabled.
 
 Configure `PUBLIC_SITE_URL` with the public HTTPS origin, `DATABASE_URL`, and **`AUTH_SECRET`** (required for production sessions; generate with `openssl rand -base64 32`). Configure optional OAuth credentials, `BLOB_READ_WRITE_TOKEN`, and `RESEND_API_KEY` with `MAIL_FROM/MAIL_TO` or SMTP settings. Never rely on local filesystem uploads on Vercel.
 
