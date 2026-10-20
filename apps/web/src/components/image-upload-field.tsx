@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "@/shims/next-image";
 import { useRef, useState } from "react";
 import { BrowserFrame } from "@/components/project-visual";
 

@@ -1,0 +1,13 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import { getSession } from "@/lib/session";
+import { loadSkills, loadMarquee } from "@/lib/content";
+import { SkillsForm } from "@/components/admin/skills-form";
+const session = await getSession(Astro.cookies);
+if (!session?.isAdmin) return Astro.redirect("/admin/login");
+const [groups, marquee] = await Promise.all([loadSkills(), loadMarquee()]);
+---
+<AdminLayout title="Skills">
+  <h1 class="text-4xl font-semibold tracking-tight">Skills</h1>
+  <SkillsForm client:load groups={groups} marquee={marquee} />
+</AdminLayout>

@@ -9,6 +9,10 @@ export function CountUp({ value, suffix = "" }: { value: number; suffix?: string
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setShown(value);
+      return;
+    }
     const io = new IntersectionObserver(([entry]) => {
       if (!entry?.isIntersecting) return;
       io.disconnect();
@@ -26,7 +30,7 @@ export function CountUp({ value, suffix = "" }: { value: number; suffix?: string
 
   return (
     <span ref={ref} className="tabular-nums">
-      {shown === null ? "———" : `${shown.toLocaleString("en-US")}${suffix}`}
+      {`${(shown ?? value).toLocaleString("en-US")}${suffix}`}
     </span>
   );
 }

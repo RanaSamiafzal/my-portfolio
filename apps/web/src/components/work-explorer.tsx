@@ -45,7 +45,7 @@ export function WorkExplorer({ projects }: { projects: Project[] }) {
           )}
         </div>
       )}
-      <div className="mt-10 space-y-4">
+      <div className="work-grid mt-10">
         {visible.map((p, i) => (
           <ProjectCard key={p.slug} project={p} index={i} />
         ))}

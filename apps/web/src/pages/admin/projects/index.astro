@@ -1,0 +1,23 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import { MutationButton } from "@/components/admin/mutation-button";
+import { getSession } from "@/lib/session";
+import { loadProjects } from "@/lib/content";
+if (!(await getSession(Astro.cookies))?.isAdmin) return Astro.redirect("/admin/login");
+const projects = await loadProjects();
+---
+<AdminLayout title="Projects">
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <h1 class="text-4xl font-semibold tracking-tight">Projects</h1>
+    <a href="/admin/projects/new" class="btn-cream">Add project</a>
+  </div>
+  <div class="mt-8 space-y-4">
+    {projects.map((project) => <article class="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-line bg-bg-1 p-4">
+      <div><h2 class="text-xl font-semibold">{project.name}</h2><p class="text-sm text-muted">/{project.slug} · {project.status}</p></div>
+      <div class="flex items-center gap-2">
+        <a href={`/admin/projects/${project.slug}`} class="min-h-11 rounded-lg px-3 py-2 text-accent">Edit</a>
+        <MutationButton client:load action="deleteProject" values={{ slug: project.slug }}>Delete</MutationButton>
+      </div>
+    </article>)}
+  </div>
+</AdminLayout>

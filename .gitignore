@@ -15,3 +15,7 @@ apps/web/public/uploads
 .vercel-auth.hdr
 .vercel-token.tmp
 .env*
+
+# Astro generated types
+.astro/
+!**/.env.example

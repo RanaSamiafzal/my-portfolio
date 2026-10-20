@@ -1,0 +1,13 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import { getSession } from "@/lib/session";
+import { loadSettings } from "@/lib/content";
+import { ProfileForm } from "@/components/admin/profile-form";
+const session = await getSession(Astro.cookies);
+if (!session?.isAdmin) return Astro.redirect("/admin/login");
+const { profile, ticker } = await loadSettings();
+---
+<AdminLayout title="Profile">
+  <h1 class="text-4xl font-semibold tracking-tight">Profile</h1>
+  <ProfileForm client:load profile={profile} ticker={ticker} />
+</AdminLayout>

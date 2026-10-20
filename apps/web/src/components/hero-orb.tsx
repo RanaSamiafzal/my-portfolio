@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/shims/next-image";
 
 /** Hero visual — desk illustration with soft blend into the dark stage. */
 export function HeroOrb({ className }: { className?: string }) {

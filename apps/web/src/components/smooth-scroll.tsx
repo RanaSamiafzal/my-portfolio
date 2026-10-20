@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname } from "@/shims/next-navigation";
 import "locomotive-scroll/locomotive-scroll.css";
 import { prefersLiteExperience } from "@/lib/media";
 
@@ -19,7 +19,8 @@ export function SmoothScroll() {
   const scrollRef = useRef<LocomotiveInstance | null>(null);
 
   useEffect(() => {
-    if (prefersLiteExperience()) return;
+    // The home entrance uses the browser's native scroll position for its portal.
+    if (pathname === "/" || prefersLiteExperience()) return;
 
     let cancelled = false;
 

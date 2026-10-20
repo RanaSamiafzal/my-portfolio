@@ -40,7 +40,7 @@ export function Pill({ children, className, active, ...rest }: ComponentPropsWit
       className={cn(
         "inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 font-mono text-xs transition-all duration-200",
         active
-          ? "border-accent/70 bg-accent/10 text-accent shadow-[0_0_18px_-4px_rgba(0,255,65,0.5)]"
+          ? "border-accent/70 bg-accent/10 text-accent shadow-[0_0_12px_-4px_color-mix(in_srgb,var(--color-accent)_28%,transparent)]"
           : "border-line-strong text-muted hover:border-line-bright hover:text-text",
         className,
       )}
@@ -63,7 +63,7 @@ export function StatusDot({ className }: { className?: string }) {
   return (
     <span className={cn("relative inline-flex size-2", className)} aria-hidden>
       <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-60" />
-      <span className="relative inline-flex size-2 rounded-full bg-accent shadow-[0_0_8px_#00ff41]" />
+      <span className="relative inline-flex size-2 rounded-full bg-accent shadow-[0_0_6px_color-mix(in_srgb,var(--color-accent)_35%,transparent)]" />
     </span>
   );
 }

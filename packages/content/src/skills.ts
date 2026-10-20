@@ -5,7 +5,7 @@ export const skillGroups: SkillGroup[] = [
     id: "frontend",
     title: "Frontend & UI",
     blurb: "Responsive, accessible interfaces translated faithfully from Figma.",
-    items: ["React", "Next.js", "TypeScript", "JavaScript", "Tailwind CSS", "HTML / CSS", "Ant Design", "shadcn/ui", "Framer Motion", "Three.js"],
+    items: ["React", "Astro", "Next.js", "TypeScript", "JavaScript", "Tailwind CSS", "HTML / CSS", "Ant Design", "shadcn/ui", "Framer Motion", "Three.js"],
   },
   {
     id: "backend",
@@ -40,7 +40,7 @@ export const skillGroups: SkillGroup[] = [
 ];
 
 export const marqueeStack = [
-  "TypeScript", "JavaScript", "React", "Next.js", "Node.js", "Express", "Socket.IO", "MongoDB",
+  "TypeScript", "JavaScript", "React", "Astro", "Next.js", "Node.js", "Express", "Socket.IO", "MongoDB",
   "PostgreSQL", "Neon", "Prisma", "Drizzle", "Redux Toolkit", "Zustand", "Tailwind", "NextAuth",
   "Stripe", "Firebase", "Three.js", "OpenAI", "Turborepo", "Vercel", "Git", "Figma",
 ];

@@ -240,15 +240,15 @@ export const projects: Project[] = [
   {
     slug: "portfolio",
     name: "This portfolio",
-    tagline: "Next.js monorepo with Three.js, NextAuth and Postgres",
+    tagline: "Astro monorepo with React islands, Auth.js and Postgres",
     summary:
-      "Turborepo monorepo: a Next.js App Router site, shared content/UI/db packages, a Three.js particle portrait, NextAuth sign-in for the guestbook, an admin inbox and an agent-readable hire API.",
+      "Turborepo monorepo: an Astro 5 SSR site with React islands, shared content/UI/db packages, a private CMS and inbox, Auth.js guestbook sign in, and an agent-readable hire API.",
     period: "2026",
     context: "Personal",
     status: "Live",
     categories: ["Full-stack"],
-    tech: ["React", "Next.js", "TypeScript", "Three.js", "NextAuth", "PostgreSQL", "Tailwind CSS", "JWT / OAuth"],
-    stack: ["Next.js", "Turborepo", "Three.js", "NextAuth", "Neon Postgres", "Tailwind v4"],
+    tech: ["React", "Astro", "TypeScript", "Three.js", "PostgreSQL", "Tailwind CSS", "JWT / OAuth"],
+    stack: ["Astro", "React", "Turborepo", "Three.js", "Neon Postgres", "Tailwind v4"],
     links: [{ label: "GitHub", href: "https://github.com/RanaSamiafzal/my-portfolio" }],
   },
 ];

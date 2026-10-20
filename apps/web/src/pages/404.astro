@@ -1,0 +1,12 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+Astro.response.status = 404;
+---
+<BaseLayout title="Page not found" canonical="/404">
+  <section class="container-x py-24">
+    <p class="text-sm text-accent">404</p>
+    <h1 class="mt-4 text-4xl font-semibold md:text-6xl">This page has moved.</h1>
+    <p class="mt-6 text-lg text-muted">Find my work or get in touch from the homepage.</p>
+    <a href="/" class="btn-cream mt-8">Back to home</a>
+  </section>
+</BaseLayout>

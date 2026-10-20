@@ -1,0 +1,134 @@
+---
+import { profile as fallbackProfile } from "@repo/content";
+import SiteFooter from "@/components/SiteFooter.astro";
+import SiteHeader from "@/components/SiteHeader.astro";
+import { SmoothScroll } from "@/components/smooth-scroll";
+import { loadSettings } from "@/lib/content";
+import { siteUrl } from "@/lib/site";
+import "@/styles/global.css";
+import type { SiteSettings } from "@repo/db";
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  settings?: SiteSettings;
+}
+
+const { title, description, canonical = "/", settings: suppliedSettings } = Astro.props;
+const settings = suppliedSettings ?? await loadSettings();
+const { profile, theme } = settings;
+
+const pageTitle = title ? `${title} — ${profile.name}` : `${profile.name} — ${profile.role}`;
+const pageDescription = description ?? profile.intro;
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: profile.name,
+  jobTitle: profile.role,
+  email: `mailto:${profile.email}`,
+  address: { "@type": "PostalAddress", addressLocality: "Lahore", addressCountry: "PK" },
+  alumniOf: profile.education.school,
+  url: siteUrl,
+  sameAs: [profile.socials.github, profile.socials.linkedin],
+  knowsAbout: ["Astro", "React", "Node.js", "Express", "MongoDB", "PostgreSQL", "Socket.IO", "Three.js"],
+};
+
+const themeStyle = [
+  `--color-accent:${theme.accent}`,
+  `--color-accent-soft:${theme.accentSoft}`,
+  `--color-cream:${theme.cream}`,
+  `--color-text:${theme.text}`,
+  `--color-bg-0:${theme.bg0}`,
+].join(";");
+---
+
+<!doctype html>
+<html lang="en" style={themeStyle}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content={theme.bg0 || "#000000"} />
+    <meta name="color-scheme" content="dark" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <meta name="author" content={profile.name || fallbackProfile.name} />
+    <link rel="canonical" href={new URL(canonical, siteUrl).toString()} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={new URL(canonical, siteUrl).href} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:image" content={new URL(settings.hero.desk, siteUrl).href} />
+    <meta property="og:image:alt" content={`${profile.name} working at his desk`} />
+    <meta property="og:site_name" content={profile.name} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={new URL(settings.hero.desk, siteUrl).href} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {Astro.url.pathname.startsWith("/admin") && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script is:inline>
+      if (location.pathname === "/" && !matchMedia("(prefers-reduced-motion: reduce)").matches && !location.hash &&
+          performance.getEntriesByType("navigation")[0]?.type !== "back_forward") {
+        document.documentElement.dataset.pageIntro = "pending";
+        document.documentElement.dataset.entryScroll = "true";
+        // Fail open if the client module cannot load. An active intro has no timer.
+        setTimeout(() => {
+          if (document.documentElement.dataset.pageIntro === "pending") {
+            delete document.documentElement.dataset.pageIntro;
+            delete document.documentElement.dataset.entryScroll;
+          }
+        }, 5000);
+      }
+    </script>
+    <style is:global>
+      :root {
+        --font-manrope: "Manrope", system-ui, sans-serif;
+        --font-geist-mono: "Geist Mono", ui-monospace, monospace;
+      }
+    </style>
+  </head>
+  <body class="min-h-dvh">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-accent focus:px-3 focus:py-2 focus:text-black"
+    >
+      Skip to content
+    </a>
+    {Astro.url.pathname === "/" && <section id="scroll-entry" class="scroll-entry" aria-label="Portfolio introduction">
+      <div class="entry-topline"><span class="entry-brand">sami<span>.dev</span></span><button type="button" class="entry-skip" data-entry-skip aria-label="Skip intro">Skip intro ↗</button></div>
+      <div class="entry-heading">
+        <p>{profile.name}</p>
+        <h2><span>Creative</span><span>Engineer</span></h2>
+      </div>
+      <svg class="entry-ring" aria-hidden="true"><circle fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke" /></svg>
+      <span class="entry-core" aria-hidden="true">↗</span>
+      <div class="entry-prompt"><button type="button" data-entry-enter aria-label="Enter portfolio">Scroll to reveal <span aria-hidden="true">↓</span></button><p>Engineering the complex. Making it feel simple.</p></div>
+      <span class="entry-index" aria-hidden="true">01 / INTRO</span>
+    </section>}
+    <SmoothScroll client:load />
+    <div id="entry-scroll-shell">
+      <div class="page-viewport">
+        <div id="page-stage">
+          <SiteHeader settings={settings} />
+          <main id="main" class="relative z-10" tabindex="-1">
+            <slot />
+          </main>
+          <SiteFooter settings={settings} />
+        </div>
+      </div>
+    </div>
+    <script type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
+    <script>
+      import { initPageMotion } from "@/lib/page-motion";
+      initPageMotion();
+    </script>
+  </body>
+</html>

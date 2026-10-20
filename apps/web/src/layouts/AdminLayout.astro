@@ -1,0 +1,18 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import { AdminSignOut } from "@/components/admin-sign-out";
+import { getSession } from "@/lib/session";
+const { title } = Astro.props;
+if (!(await getSession(Astro.cookies))?.isAdmin) return Astro.redirect("/admin/login");
+const sections = ["projects", "profile", "experience", "skills", "faq", "services", "theme"];
+---
+<BaseLayout title={title} canonical={Astro.url.pathname}>
+  <div class="container-x py-8">
+    <nav aria-label="Admin" class="flex flex-wrap items-center gap-2 border-b border-line pb-4 text-sm">
+      <a href="/admin" class="rounded-lg px-3 py-2 text-accent">Inbox</a>
+      {sections.map((name) => <a href={`/admin/${name}`} aria-current={Astro.url.pathname.startsWith(`/admin/${name}`) ? "page" : undefined} class="rounded-lg px-3 py-2 capitalize hover:bg-bg-2 aria-[current=page]:bg-bg-2 aria-[current=page]:text-accent">{name}</a>)}
+      <AdminSignOut client:load />
+    </nav>
+    <div class="mx-auto max-w-3xl py-8"><slot /></div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,322 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { SectionLabel, Tag } from "@repo/ui";
+import { loadExperience, loadFaq, loadMarquee, loadProjects, loadSettings, loadStackUsage } from "@/lib/content";
+import { getGitHubStats } from "@/lib/github";
+import { CountUp } from "@/components/count-up";
+import { Faq } from "@/components/faq";
+import { HomeTerminal } from "@/components/home-heavy";
+import { PixelIcon, type PixelIconName } from "@/components/pixel-icon";
+import SelectedProjects from "@/components/SelectedProjects.astro";
+import { HeroSculpture } from "@/components/hero-sculpture";
+import { KineticScene } from "@/components/kinetic-scene";
+import { StackUsage } from "@/components/stack-usage";
+const [gh, projects, settings, experience, marqueeStack, usage, faq] = await Promise.all([
+  getGitHubStats(), loadProjects(), loadSettings(), loadExperience(), loadMarquee(), loadStackUsage(), loadFaq(),
+]);
+const { profile, services, hero } = settings;
+const serviceIcons: PixelIconName[] = ["stack", "bolt", "shield"];
+const serviceProof = ["/work/brandly", "/work/aide", "/work/brandly"];
+  const featured = projects.filter((p) => p.featured);
+  const live = projects.filter((p) => p.status === "Live");
+  const cases = projects.filter((p) => p.caseStudy);
+
+  const stats: { value: number; suffix?: string; label: string; icon: PixelIconName; mobile?: boolean }[] = [
+    { value: gh.publicRepos, label: "public repositories", icon: "code", mobile: true },
+    { value: live.length, label: "products live in production", icon: "rocket", mobile: true },
+    { value: 3, label: "AI powered products built", icon: "bolt", mobile: true },
+    { value: usage.length, label: "technologies shipped to prod", icon: "users", mobile: true },
+    { value: new Date().getFullYear() - 2022, suffix: "+", label: "years delivering to deadlines", icon: "clock", mobile: true },
+    { value: cases.length, label: "documented case studies", icon: "chart", mobile: true },
+    { value: 5, label: "packages in the Brandly monorepo", icon: "stack" },
+    { value: profile.courses.length, label: "courses and certifications", icon: "shield" },
+  ];
+
+---
+<BaseLayout canonical="/" settings={settings}>
+      <section class:list={["cinematic-hero", { "cinematic-hero-workstation": hero.desk === "/hero-workstation.png" }]} aria-labelledby="hero-heading">
+        <div class="container-x">
+          <div class="cinematic-identity"><span aria-hidden="true"></span><p>{profile.name}<small>Full stack engineer</small></p></div>
+          <div class="cinematic-stage">
+            <h1 id="hero-heading" class="cinematic-title"><span class="cinematic-outline" data-text="Creative">Creative</span><span>Engineer</span></h1>
+            {hero.desk === "/hero-workstation.png" ? <>
+              <div class="cinematic-portrait workstation-static"><img src={hero.desk} width="1672" height="941" fetchpriority="high" alt={`${profile.name} working at a laptop, with a phone and clock on the desk`} /></div>
+              <HeroSculpture client:load />
+            </> : <div class="cinematic-portrait"><KineticScene client:load src={hero.desk} mask={hero.mask} matte={hero.matte} cinematic /></div>}
+            <p class="cinematic-caption cinematic-caption-left">Engineering the complex.<br />Making it feel simple.</p>
+            <p class="cinematic-caption cinematic-caption-right">Based in Lahore.<br />Building for everywhere.</p>
+          </div>
+          <div class="cinematic-bottom">
+            <a href="#selected-work" class="cinematic-work-link">Explore selected work <span aria-hidden="true">↗</span></a>
+            <a href="#selected-work" class="cinematic-scroll">Scroll to discover <span aria-hidden="true">↓</span></a>
+          </div>
+          <p class="cinematic-index" aria-hidden="true">01 / INTRO</p>
+        </div>
+      </section>
+
+      <SelectedProjects projects={featured} total={projects.length} />
+
+      <section class="section-y border-t border-line">
+        <div class="container-x">
+          <div data-reveal class="grid gap-8 md:grid-cols-2 md:items-end">
+            <div>
+              <SectionLabel index="02">How I can help</SectionLabel>
+              <h2 class="h-display mt-5 text-4xl sm:text-5xl md:text-6xl text-balance">Good ideas deserve<br />good engineering.</h2>
+            </div>
+            <div>
+              <p class="max-w-[46ch] leading-relaxed text-muted text-pretty">
+                End to end ownership, production habits, no hand holding. Every offer below is something I have already shipped.
+              </p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <Tag className="text-accent">Lahore · remote worldwide</Tag>
+                <Tag className="text-accent">EU · UK · US overlap</Tag>
+                <Tag className="text-accent">Full time · contract · freelance</Tag>
+              </div>
+              <a href="/contact" class="btn-cream mt-6">
+                Book a project →
+              </a>
+            </div>
+          </div>
+          <div class="service-editorial-grid mt-12 grid gap-6 md:grid-cols-3">
+            {services.map((s, i) => (
+              <div data-reveal>
+                <article class="service-editorial group flex h-full flex-col">
+                  <div class="flex items-center justify-between">
+                    <PixelIcon name={serviceIcons[i]!} />
+                    <span class="font-mono text-xs text-muted-soft">{s.id}</span>
+                  </div>
+                  <h3 class="mt-6 font-display text-2xl font-semibold tracking-tight transition-colors group-hover:text-accent">
+                    {s.title}
+                  </h3>
+                  <p class="mt-3 flex-1 leading-relaxed text-muted text-pretty">{s.body}</p>
+                  <div class="mt-6 flex flex-wrap gap-1.5">
+                    {s.tags.map((t) => (
+                      <Tag>{t}</Tag>
+                    ))}
+                  </div>
+                  <a href={serviceProof[i]!} class="link-mono mt-7">
+                    See the proof →
+                  </a>
+                </article>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="section-y border-t border-line">
+        <div class="container-x">
+          <div data-reveal>
+            <SectionLabel index="03">In numbers</SectionLabel>
+            <h2 class="h-display mt-5 text-4xl sm:text-5xl md:text-6xl text-balance">Less talk. More shipped.</h2>
+          </div>
+          <div data-reveal class="mt-8 grid grid-cols-2 overflow-hidden rounded-2xl border border-line sm:mt-12 lg:grid-cols-4">
+            {stats.map((s) => (
+              <div
+                class={`group border-b border-r border-line p-4 transition-colors hover:bg-bg-1 sm:p-6 md:p-7${s.mobile ? "" : " max-lg:hidden"}`}
+              >
+                <PixelIcon name={s.icon} className="size-3.5 opacity-80 sm:size-4" />
+                <p class="mt-2.5 font-display text-[1.85rem] leading-none tracking-tight text-text sm:mt-5 sm:text-5xl">
+                  <CountUp client:visible value={s.value} suffix={s.suffix} />
+                </p>
+                <p class="mt-1.5 text-[11px] leading-snug text-muted sm:mt-2 sm:text-sm">{s.label}</p>
+              </div>
+            ))}
+          </div>
+          <p class="mt-4 font-mono text-[11px] text-muted-soft">
+            Repos live from the GitHub API · top languages: {gh.languages.slice(0, 4).join(" · ")}
+          </p>
+
+          <div data-reveal class="mt-14 border-t border-line pt-8">
+            <p class="text-xl text-text md:text-2xl text-balance">Products I have built and shipped.</p>
+            <div class="mt-5 grid grid-cols-3 border-l border-t border-line lg:grid-cols-6">
+              {projects
+                .filter((p) => p.slug !== "portfolio")
+                .map((p) => {
+                  const href = p.caseStudy ? `/work/${p.slug}` : (p.links[0]?.href ?? "/work");
+                  const external = !p.caseStudy && href.startsWith("http");
+                  return (
+                    <a
+                      href={href}
+                      target={external ? "_blank" : undefined}
+                      rel={external ? "noreferrer" : undefined}
+                      class="group grid aspect-square place-items-center border-b border-r border-line p-2 text-center transition-colors hover:bg-bg-2 sm:aspect-[4/3] sm:p-4"
+                    >
+                      <span>
+                        <span class="block font-display text-[15px] font-semibold tracking-tight text-muted transition-colors group-hover:text-accent sm:text-xl">
+                          {p.name}
+                        </span>
+                        <span class="mt-1 block font-mono text-[9px] uppercase tracking-wider text-muted-soft sm:text-[10px]">
+                          {p.status}
+                        </span>
+                      </span>
+                    </a>
+                  );
+                })}
+            </div>
+            <a href="/work" class="btn-outline mt-5 inline-flex w-full justify-center sm:w-auto">
+              See all projects →
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-y border-t border-line">
+        <div class="container-x">
+          <div data-reveal class="grid gap-4 md:grid-cols-2 md:items-end md:gap-6">
+            <div>
+              <SectionLabel index="04">Toolkit</SectionLabel>
+              <h2 class="h-display mt-4 text-4xl sm:text-5xl md:text-6xl text-balance">The tools behind<br />the work.</h2>
+            </div>
+            <p class="max-w-[46ch] text-[15px] leading-relaxed text-muted text-pretty sm:text-base">
+              Not a logo wall — counted from my real projects. React is in every one of them;{" "}
+              {usage
+                .filter((u) => u.pct >= 50 && u.name !== "React")
+                .map((u) => u.name)
+                .join(", ")}{" "}
+              power most of the rest.
+            </p>
+          </div>
+          <div data-reveal class="mt-8 sm:mt-14">
+            <StackUsage client:visible rows={usage.slice(0, 12)} total={projects.length} />
+          </div>
+        </div>
+        <div class="relative mt-16 overflow-hidden border-y border-line py-5 [mask-image:linear-gradient(90deg,transparent,#000_10%,#000_90%,transparent)]">
+          <div class="flex w-max animate-marquee gap-3 [animation-duration:60s]">
+            {[...marqueeStack, ...marqueeStack].map((s) => (
+              <span class="rounded-lg border border-line-strong px-4 py-1.5 font-mono text-sm text-muted">
+                {s}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="section-y border-t border-line">
+        <div class="container-x">
+          <p class="text-sm text-accent">From idea to production</p>
+          <h2 data-tagline class="mt-6 max-w-[680px] text-4xl font-semibold tracking-tight md:text-6xl">
+            {"Build the product people need.".split(" ").map((word) => <span class="inline-block">{word}&nbsp;</span>)}
+            <br />
+            {"Keep it reliable as it grows.".split(" ").map((word) => <span class="inline-block">{word}&nbsp;</span>)}
+          </h2>
+        </div>
+      </section>
+
+      <section class="section-y border-t border-line">
+        <div class="container-x grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+          <div data-reveal>
+            <SectionLabel index="05">A different way in</SectionLabel>
+            <h2 class="h-display mt-5 text-4xl sm:text-5xl md:text-6xl text-balance">Don&apos;t scroll. Type.</h2>
+            <p class="mt-6 max-w-[44ch] leading-relaxed text-muted text-pretty">
+              A real shell over my portfolio — virtual filesystem, tab completion, history, and live network calls. Try{" "}
+              <code class="rounded bg-bg-2 px-1.5 py-0.5 font-mono text-accent">neofetch</code>, or send a brief with{" "}
+              <code class="rounded bg-bg-2 px-1.5 py-0.5 font-mono text-accent">hire</code>.
+            </p>
+            <p class="mt-6 max-w-[44ch] text-sm leading-relaxed text-muted-soft text-pretty">
+              Prefer machines? Agents can read{" "}
+              <a href="/llms.txt" class="text-accent underline">
+                /llms.txt
+              </a>{" "}
+              and send a brief to <code class="font-mono text-accent">POST /api/hire</code>.
+            </p>
+          </div>
+          <div data-reveal>
+            <HomeTerminal client:visible
+              data={{
+                name: profile.name,
+                role: profile.role,
+                location: profile.location,
+                timezone: profile.timezone,
+                email: profile.email,
+                github: profile.socials.github,
+                githubUser: profile.githubUser,
+                linkedin: profile.socials.linkedin,
+                cv: profile.cv,
+                about: [...profile.about],
+                education: `${profile.education.degree}, ${profile.education.school}`,
+                experience: experience.map((e) => ({
+                  period: e.period,
+                  title: e.title,
+                  company: e.company,
+                  points: e.points,
+                })),
+                projects: projects.map((p) => ({
+                  slug: p.slug,
+                  name: p.name,
+                  tagline: p.tagline,
+                  summary: p.summary,
+                  status: p.status,
+                  period: p.period,
+                  context: p.context,
+                  stack: p.stack,
+                  tech: p.tech,
+                  links: p.links,
+                  hasCase: Boolean(p.caseStudy),
+                })),
+                stack: usage,
+              }}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section class="section-y border-t border-line">
+        <div class="container-x grid gap-12 lg:grid-cols-[0.85fr_1.15fr]">
+          <div data-reveal>
+            <SectionLabel index="06">Experience</SectionLabel>
+            <h2 class="h-display mt-5 text-4xl sm:text-5xl md:text-6xl text-balance">Where I have shipped.</h2>
+            <a href="/about" class="link-mono mt-8 inline-block">
+              Full timeline →
+            </a>
+          </div>
+          <div class="divide-y divide-line border-y border-line">
+            {experience.map((r) => (
+              <div data-reveal class="grid gap-2 py-7 sm:grid-cols-[160px_1fr]">
+                <p class="font-mono text-xs text-muted-soft">{r.period}</p>
+                <div>
+                  <p class="text-xl text-text">
+                    {r.title} <span class="text-accent">@ {r.company}</span>
+                  </p>
+                  <p class="mt-2 leading-relaxed text-muted text-pretty">{r.points[0]}</p>
+                  <div class="mt-3 flex flex-wrap gap-1.5">
+                    {r.stack.slice(0, 4).map((s) => (
+                      <Tag>{s}</Tag>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="section-y border-t border-line">
+        <div class="container-x grid gap-12 lg:grid-cols-[0.85fr_1.15fr]">
+          <div data-reveal>
+            <SectionLabel index="07">Good to know</SectionLabel>
+            <h2 class="h-display mt-5 text-4xl sm:text-5xl md:text-6xl text-balance">What teams usually ask.</h2>
+          </div>
+          <div data-reveal>
+            <Faq items={faq} />
+          </div>
+        </div>
+      </section>
+
+      <section class="contact-editorial section-y border-t border-line" aria-labelledby="contact-heading">
+        <div class="container-x">
+          <SectionLabel index="08">Next chapter</SectionLabel>
+          <div class="contact-editorial-main" data-reveal>
+            <h2 id="contact-heading" class="h-display">Have something<br /><span class="editorial-muted">in mind?</span></h2>
+            <a href="/contact" class="contact-orbit" aria-label="Start a conversation">
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+          <div class="contact-editorial-meta">
+            <p><span class="availability-dot" aria-hidden="true"></span>{profile.availability}.<br /><span class="text-muted-soft">I usually reply within a day.</span></p>
+            <a href={`mailto:${profile.email}`} class="editorial-email">{profile.email} <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </section>
+
+</BaseLayout>

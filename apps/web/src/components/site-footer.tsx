@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/shims/next-link";
 import { LocalTime } from "./local-time";
 import { loadProfile, loadSettings } from "@/lib/content";
 
@@ -8,14 +8,14 @@ export async function SiteFooter() {
     <footer className="relative z-10 mt-4 border-t border-line sm:mt-8">
       <div className="container-x grid grid-cols-2 gap-x-6 gap-y-8 py-8 sm:gap-y-10 sm:py-12 md:grid-cols-[1.4fr_1fr_1fr] md:gap-12 md:py-16">
         <div className="col-span-2 md:col-span-1">
-          <Link href="/" className="font-display text-2xl tracking-tight">
+          <Link href="/" className="font-display text-2xl font-semibold tracking-tight">
             ranasami<span className="text-accent">.</span>dev
           </Link>
-          <p className="mt-3 max-w-[36ch] text-sm leading-relaxed text-muted md:mt-4">
-            Full-stack engineer building real-time, AI-powered web products from Lahore, for teams anywhere.
+          <p className="mt-3 max-w-[36ch] text-sm leading-relaxed text-muted text-pretty md:mt-4">
+            Full stack engineer building real time, AI powered web products from Lahore, for teams anywhere.
           </p>
           <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-line px-3 py-1 font-mono text-[11px] text-muted md:mt-5">
-            <span className="size-1.5 rounded-full bg-accent shadow-[0_0_6px_#00ff41]" /> Lahore · <LocalTime /> PKT
+            <span className="size-1.5 rounded-full bg-accent" /> Lahore · <LocalTime /> PKT
           </p>
         </div>
         <div>
@@ -41,7 +41,7 @@ export async function SiteFooter() {
       </div>
       <div className="container-x flex flex-col gap-2 border-t border-line py-5 font-mono text-[11px] text-muted-soft sm:flex-row sm:flex-wrap sm:justify-between sm:gap-3 sm:py-6">
         <span>© {new Date().getFullYear()} {profile.name}. All rights reserved.</span>
-        <span>Built with Next.js · Turborepo · Three.js · NextAuth</span>
+        <span>Built with Astro · React · Turborepo · Three.js</span>
       </div>
     </footer>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/shims/next-navigation";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 /* ─────────────────────────── data passed from the server ─────────────────────────── */
@@ -660,7 +660,7 @@ export function Terminal({ data }: { data: ShellData }) {
   return (
     <div
       ref={rootRef}
-      className="relative overflow-hidden rounded-2xl border border-line-strong bg-[#030805] shadow-[0_0_80px_-20px_rgba(0,255,65,0.3)]"
+      className="terminal-surface relative overflow-hidden rounded-2xl border border-line-strong bg-[#181818]"
       onClick={() => (booted ? inputRef.current?.focus() : boot(true))}
       onFocus={() => boot(true)}
       tabIndex={booted ? -1 : 0}
@@ -785,7 +785,7 @@ export function Terminal({ data }: { data: ShellData }) {
       {/* status bar (tmux-style) */}
       <div className="flex items-center justify-between bg-accent/10 font-mono text-[10px] uppercase tracking-wider">
         <div className="flex">
-          <span className="bg-accent px-2.5 py-1 font-semibold text-black">{mode.kind === "hire" ? "HIRE" : busy ? "BUSY" : "NORMAL"}</span>
+          <span className="bg-accent px-2.5 py-1 font-semibold text-white">{mode.kind === "hire" ? "HIRE" : busy ? "BUSY" : "NORMAL"}</span>
           <span className="px-2.5 py-1 text-accent">{cwdLabel}</span>
         </div>
         <div className="flex text-muted-soft">

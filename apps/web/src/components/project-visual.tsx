@@ -1,21 +1,21 @@
-import Image from "next/image";
+import Image from "@/shims/next-image";
 import type { ReactNode } from "react";
 import { cn } from "@repo/ui";
 
 /** Fake browser window used to frame screenshots and product mockups. */
 export function BrowserFrame({ url, children, className, mock }: { url: string; children: ReactNode; className?: string; mock?: boolean }) {
   return (
-    <div className={cn("overflow-hidden rounded-2xl border border-line-strong bg-[#0d0d16] shadow-2xl shadow-black/60", className)}>
-      <div className="flex items-center gap-3 border-b border-line bg-white/[0.03] px-4 py-2.5">
+    <div className={cn("overflow-hidden rounded-2xl border border-line-strong bg-bg-1 shadow-lg shadow-black/5", className)}>
+      <div className="flex items-center gap-3 border-b border-line bg-bg-2 px-4 py-2">
         <span className="flex gap-1.5" aria-hidden>
           <span className="size-2.5 rounded-full bg-[#ff5f57]/80" />
           <span className="size-2.5 rounded-full bg-[#febc2e]/80" />
           <span className="size-2.5 rounded-full bg-[#28c840]/80" />
         </span>
-        <span className="mx-auto max-w-[70%] truncate rounded-md bg-white/5 px-3 py-0.5 font-mono text-[10px] text-muted-soft">{url}</span>
+        <span className="mx-auto max-w-[70%] truncate rounded-md bg-bg-1 px-3 py-0.5 font-mono text-[10px] text-muted-soft">{url}</span>
         <span className="w-10 text-right font-mono text-[9px] uppercase tracking-wider text-muted-soft">{mock ? "Mockup" : ""}</span>
       </div>
-      <div className="relative">{children}</div>
+      <div className="product-preview relative overflow-hidden"><div className="project-media-drift">{children}</div></div>
     </div>
   );
 }

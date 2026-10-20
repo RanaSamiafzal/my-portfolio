@@ -78,15 +78,22 @@ export type SiteSettings = {
 };
 
 const defaultTheme: SiteTheme = {
-  accent: "#00ff41",
-  accentSoft: "#4ade80",
-  cream: "#f5f1ea",
-  text: "#f5f1ea",
+  accent: "#D5F56A",
+  accentSoft: "#BDDA5F",
+  cream: "#F3F1EA",
+  text: "#F3F1EA",
   bg0: "#000000",
 };
 
+// Upgrade superseded built-in presets on read, preserving custom CMS themes.
+const legacyTheme: SiteTheme = {
+  accent: "#00ff41", accentSoft: "#4ade80", cream: "#f5f1ea", text: "#f5f1ea", bg0: "#000000",
+};
+
+const lightTheme: SiteTheme = { accent: "#1d4ed8", accentSoft: "#3b82f6", cream: "#f4f5f7", text: "#0a0a0a", bg0: "#f4f5f7" };
+
 const defaultHero: HeroAssets = {
-  desk: "/hero-desk.jpg",
+  desk: "/hero-workstation.png",
   mask: "/hero-desk-mask.png",
   matte: "/hero-desk-matte.png",
   portrait: "/portrait.jpg",
@@ -265,13 +272,18 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     const rows = await sql()`SELECT payload FROM site_settings WHERE id = 1 LIMIT 1`;
     if (!rows.length) return base;
     const payload = rows[0]!.payload as Partial<SiteSettings>;
+    const storedHero = { ...base.hero, ...(payload.hero ?? {}) };
+    if (storedHero.desk === "/hero-desk.jpg") storedHero.desk = base.hero.desk;
+    const storedTheme = { ...base.theme, ...(payload.theme ?? {}) };
+    const isLegacyPreset = [legacyTheme, lightTheme].some((preset) =>
+      (Object.keys(preset) as (keyof SiteTheme)[]).every((key) => storedTheme[key].toLowerCase() === preset[key]));
     return {
       profile: { ...base.profile, ...(payload.profile ?? {}) },
       ticker: payload.ticker ?? base.ticker,
       services: payload.services ?? base.services,
       navLinks: payload.navLinks ?? base.navLinks,
-      theme: { ...base.theme, ...(payload.theme ?? {}) },
-      hero: { ...base.hero, ...(payload.hero ?? {}) },
+      theme: isLegacyPreset ? { ...base.theme } : storedTheme,
+      hero: storedHero,
     };
   } catch {
     return base;

@@ -1,0 +1,13 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import { getSession } from "@/lib/session";
+import { loadExperience } from "@/lib/content";
+import { ExperienceForm } from "@/components/admin/experience-form";
+const session = await getSession(Astro.cookies);
+if (!session?.isAdmin) return Astro.redirect("/admin/login");
+const roles = await loadExperience();
+---
+<AdminLayout title="Experience">
+  <h1 class="text-4xl font-semibold tracking-tight">Experience</h1>
+  <ExperienceForm client:load roles={roles} />
+</AdminLayout>

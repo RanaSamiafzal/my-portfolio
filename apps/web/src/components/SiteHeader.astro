@@ -1,0 +1,66 @@
+---
+import { FileIcon, GitHubIcon, LinkedInIcon } from "./icons";
+import { MenuOverlay } from "./menu-overlay";
+import type { SiteSettings } from "@repo/db";
+
+interface Props { settings: SiteSettings }
+const { settings } = Astro.props;
+const { profile } = settings;
+const links = settings.navLinks.filter((l) => l.href !== "/").map((l) => ({ href: l.href, label: l.label }));
+const menuLinks = settings.navLinks;
+const cinematic = Astro.url.pathname === "/";
+const heroLinks = links.filter((link) => ["/work", "/about", "/contact"].includes(link.href));
+---
+
+{cinematic ? <header class="cinematic-header">
+  <div class="container-x cinematic-header-inner">
+    <a href="/" class="cinematic-brand" aria-label="sami.dev home">sami<span>.dev</span></a>
+    <div class="cinematic-header-actions">
+      <nav aria-label="Main" class="cinematic-nav hidden md:flex">
+        {heroLinks.map(link => <a href={link.href}>{link.label}</a>)}
+      </nav>
+      <a href="/contact" class="cinematic-availability" aria-label={profile.availability} title={profile.availability}><span aria-hidden="true"></span></a>
+      <MenuOverlay client:load profile={profile} links={menuLinks} />
+    </div>
+  </div>
+</header> : <header class="site-header sticky z-40">
+  <div class="header-shell flex items-center justify-between gap-6">
+    <a href="/" class="site-brand font-display text-xl font-semibold tracking-tight text-text">
+      <span class="brand-symbol" aria-hidden="true">r/s</span><span>sami<span class="text-accent">.</span>dev</span>
+    </a>
+    <nav aria-label="Main" class="editorial-nav hidden items-center gap-6 md:flex">
+      {links.map((link) => <a href={link.href} aria-current={Astro.url.pathname.startsWith(link.href) ? "page" : undefined} class="py-3 text-sm text-muted hover:text-accent aria-[current=page]:text-accent">{link.label}</a>)}
+    </nav>
+    <div class="flex items-center gap-1">
+      <div class="hidden items-center gap-1 text-muted lg:flex">
+        <a
+          href={profile.socials.github}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="GitHub"
+          class="grid size-11 place-items-center rounded-lg transition-colors hover:text-accent md:size-9"
+        >
+          <GitHubIcon className="size-4" />
+        </a>
+        <a
+          href={profile.socials.linkedin}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="LinkedIn"
+          class="grid size-11 place-items-center rounded-lg transition-colors hover:text-accent md:size-9"
+        >
+          <LinkedInIcon className="size-4" />
+        </a>
+        <a
+          href={profile.cv}
+          target="_blank"
+          aria-label="Download CV"
+          class="grid size-11 place-items-center rounded-lg transition-colors hover:text-accent md:size-9"
+        >
+          <FileIcon className="size-4" />
+        </a>
+      </div>
+      <MenuOverlay client:load profile={profile} links={menuLinks} />
+    </div>
+  </div>
+</header>}

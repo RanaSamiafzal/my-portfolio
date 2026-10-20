@@ -30,7 +30,7 @@ type Repo = { stargazers_count: number; language: string | null; pushed_at: stri
 export async function getGitHubStats(): Promise<GitHubStats> {
   const headers: HeadersInit = { Accept: "application/vnd.github+json" };
   if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
-  const opts = { headers, next: { revalidate: 3600 } };
+  const opts: RequestInit = { headers };
 
   try {
     const [userRes, reposRes] = await Promise.all([

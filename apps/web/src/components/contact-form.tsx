@@ -17,13 +17,13 @@ type State = {
 const TO = profile.email;
 
 const inputClass =
-  "w-full rounded-xl border border-line-strong bg-black/50 px-4 py-3 text-text placeholder:text-muted-soft/60 outline-none transition-colors focus:border-accent focus:ring-4 focus:ring-accent/10";
+  "w-full rounded-xl border border-line-strong bg-bg-1 px-4 py-3 text-text placeholder:text-muted-soft/60 outline-none transition-colors focus:border-accent focus:ring-4 focus:ring-accent/10";
 
 export function ContactForm() {
   const [interest, setInterest] = useState(interests[0]!);
   const [state, setState] = useState<State>({ status: "idle" });
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     const data = Object.fromEntries(new FormData(form));
@@ -82,12 +82,12 @@ export function ContactForm() {
         <label className="block">
           <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-muted">Name *</span>
           <input name="name" required autoComplete="name" placeholder="Ada Lovelace" className={inputClass} />
-          {err("name") && <span className="mt-1 block text-xs text-red-400">{err("name")}</span>}
+          {err("name") && <span className="mt-1 block text-xs text-red-300">{err("name")}</span>}
         </label>
         <label className="block">
           <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-muted">Email *</span>
           <input name="email" type="email" required autoComplete="email" placeholder="ada@company.com" className={inputClass} />
-          {err("email") && <span className="mt-1 block text-xs text-red-400">{err("email")}</span>}
+          {err("email") && <span className="mt-1 block text-xs text-red-300">{err("email")}</span>}
         </label>
       </div>
       <label className="block">
@@ -113,13 +113,13 @@ export function ContactForm() {
           placeholder="What are you building, what does success look like, and when do you need it?"
           className={cn(inputClass, "resize-y")}
         />
-        {err("message") && <span className="mt-1 block text-xs text-red-400">{err("message")}</span>}
+        {err("message") && <span className="mt-1 block text-xs text-red-300">{err("message")}</span>}
       </label>
       {/* Honeypot */}
       <input name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
       {state.status === "error" && state.message && (
         <div className="space-y-3">
-          <p className={state.mailto ? "text-sm text-muted" : "text-sm text-red-400"}>{state.message}</p>
+          <p className={state.mailto ? "text-sm text-muted" : "text-sm text-red-300"}>{state.message}</p>
           {state.mailto && (
             <a href={state.mailto} className="btn-outline">
               ✉ Send via email (prefilled) ↗

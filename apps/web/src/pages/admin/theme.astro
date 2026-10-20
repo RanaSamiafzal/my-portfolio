@@ -1,0 +1,13 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import { getSession } from "@/lib/session";
+import { loadSettings } from "@/lib/content";
+import { ThemeForm } from "@/components/admin/theme-form";
+const session = await getSession(Astro.cookies);
+if (!session?.isAdmin) return Astro.redirect("/admin/login");
+const { theme, hero } = await loadSettings();
+---
+<AdminLayout title="Theme">
+  <h1 class="text-4xl font-semibold tracking-tight">Theme</h1>
+  <ThemeForm client:load theme={theme} hero={hero} />
+</AdminLayout>

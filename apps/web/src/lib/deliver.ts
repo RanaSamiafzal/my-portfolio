@@ -1,4 +1,3 @@
-import "server-only";
 import { createMessage, hasDatabase } from "@repo/db";
 import { hasMail, sendInquiryEmails, type Inquiry } from "@repo/mail";
 

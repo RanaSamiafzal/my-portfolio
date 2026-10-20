@@ -1,0 +1,39 @@
+---
+import type { Project } from "@repo/content";
+import { ProjectVisual } from "@/components/project-visual";
+interface Props { projects: Project[]; total: number; }
+const { projects, total } = Astro.props;
+const number = (n: number) => String(n).padStart(2, "0");
+---
+<section id="selected-work" class="work-gallery" aria-labelledby="work-heading">
+  <div class="container-x">
+    <header class="work-gallery-header">
+      <p class="work-gallery-eyebrow"><span aria-hidden="true">↘</span> Selected work / {number(projects.length)}</p>
+      <div class="work-gallery-intro">
+        <h2 id="work-heading">Less talk.<br />More <span>building.</span></h2>
+        <div class="work-gallery-note"><span class="work-gallery-asterisk" aria-hidden="true">✳</span><p>From the first idea to the last detail.<br />A few things I’ve helped bring to life.</p></div>
+      </div>
+    </header>
+    <div class="work-gallery-grid">
+      {projects.map((project, index) => {
+        const href = project.caseStudy ? `/work/${project.slug}` : project.links[0]?.href;
+        const external = href?.startsWith("http");
+        const preview = project.image
+          ? <img src={project.image} alt={`${project.name} website preview`} width="800" height="500" loading="lazy" decoding="async" />
+          : <ProjectVisual slug={project.slug} imageUrl={project.imageUrl} />;
+        return <article id={`project-${project.slug}`} class="work-gallery-item" aria-labelledby={`gallery-title-${project.slug}`}>
+          <div class="work-gallery-index"><span>{number(index + 1)} / {project.categories[0] ?? "Selected project"}</span><span>{project.period}</span></div>
+          {href ? <a class="work-gallery-preview" href={href} target={external ? "_blank" : undefined} rel={external ? "noreferrer" : undefined} aria-label={`${project.caseStudy ? "Read" : "Visit"} ${project.name}${project.caseStudy ? " case study" : ""}`}>
+            {preview}<span class="work-gallery-open" aria-hidden="true">↗</span><span class="work-gallery-preview-label" aria-hidden="true">{project.caseStudy ? "Explore case study" : "Visit website"}</span>
+          </a> : <div class="work-gallery-preview">{preview}</div>}
+          <div class="work-gallery-caption">
+            <div><h3 id={`gallery-title-${project.slug}`}>{project.name}</h3><p>{project.tagline}</p></div>
+            <span class="work-gallery-status"><i aria-hidden="true"></i>{project.status}</span>
+          </div>
+          <p class="work-gallery-tools">{project.stack.slice(0, 3).join(" / ")}</p>
+        </article>;
+      })}
+    </div>
+    <footer class="work-gallery-footer"><p>There’s more where that came from.<span>{number(total)} projects. Plenty of curiosity.</span></p><a href="/work">All projects <span aria-hidden="true">↗</span></a></footer>
+  </div>
+</section>

@@ -1,0 +1,17 @@
+---
+import type { Project } from "@repo/content";
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import { ProjectForm } from "@/components/admin/project-form";
+import { getSession } from "@/lib/session";
+import { loadProject } from "@/lib/content";
+if (!(await getSession(Astro.cookies))?.isAdmin) return Astro.redirect("/admin/login");
+const slug = Astro.params.slug!;
+const isNew = slug === "new";
+const empty: Project = { slug: "", name: "", tagline: "", summary: "", period: "", context: "", status: "Live", featured: false, categories: ["Full-stack"], tech: [], stack: [], links: [] };
+const project = isNew ? empty : await loadProject(slug);
+if (!project) return Astro.redirect("/404");
+---
+<AdminLayout title={isNew ? "New project" : `Edit ${project.name}`}>
+  <h1 class="text-4xl font-semibold tracking-tight">{isNew ? "New project" : `Edit ${project.name}`}</h1>
+  <ProjectForm client:load project={project} isNew={isNew} />
+</AdminLayout>

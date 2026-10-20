@@ -1,0 +1,13 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import { getSession } from "@/lib/session";
+import { loadSettings } from "@/lib/content";
+import { ServicesForm } from "@/components/admin/services-form";
+const session = await getSession(Astro.cookies);
+if (!session?.isAdmin) return Astro.redirect("/admin/login");
+const { services } = await loadSettings();
+---
+<AdminLayout title="Services">
+  <h1 class="text-4xl font-semibold tracking-tight">Services</h1>
+  <ServicesForm client:load services={services} />
+</AdminLayout>

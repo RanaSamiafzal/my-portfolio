@@ -1,0 +1,75 @@
+---
+import { hasDatabase, listGuestbook } from "@repo/db";
+import { Card, SectionLabel } from "@repo/ui";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getSession } from "@/lib/session";
+import { oauthProviders } from "@/lib/oauth";
+import { GuestbookForm } from "@/components/guestbook-form";
+import { GuestbookSignIn } from "@/components/guestbook-sign-in";
+import { GuestbookDelete } from "@/components/guestbook-delete";
+import { AdminSignOut } from "@/components/admin-sign-out";
+
+export const prerender = false;
+
+const fmt = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric" });
+
+const [session, entries] = await Promise.all([
+  getSession(Astro.cookies),
+  listGuestbook().catch(() => []),
+]);
+const signedIn = Boolean(session);
+const providers = oauthProviders().map((p) => p.id);
+---
+
+<BaseLayout
+  title="Guestbook"
+  description="Leave a note for Rana Muhammad Sami. Sign in with GitHub or Google."
+  canonical="/guestbook"
+>
+  <div class="container-x pb-24 pt-16 md:pt-24">
+    <SectionLabel index="04">Guestbook</SectionLabel>
+    <h1 class="mt-5 h-display text-[clamp(2.6rem,7vw,5rem)] leading-none tracking-tight">Sign the wall.</h1>
+    <p class="mt-6 max-w-[56ch] leading-relaxed text-muted">
+      Recruiters, collaborators, fellow developers — leave a note. Sign in with GitHub or Google to leave a message.
+    </p>
+
+    <Card className="mt-12 p-6 md:p-8">
+      {signedIn ? <div>
+        <p class="text-sm text-muted">Signed in as {session!.name || session!.email}</p>
+        <GuestbookForm client:load />
+        <AdminSignOut client:load redirectTo="/guestbook" />
+      </div> : <GuestbookSignIn client:load providers={providers} />}
+    </Card>
+
+    <ul class="mt-12 space-y-3">
+      {
+        entries.map((e) => (
+          <li class="flex gap-4 rounded-2xl border border-line p-5">
+            {e.avatar ? (
+              <img src={e.avatar} alt="" width="40" height="40" class="size-10 shrink-0 rounded-full" />
+            ) : (
+              <span class="grid size-10 shrink-0 place-items-center rounded-full bg-bg-2 font-mono text-accent">
+                {e.author[0]}
+              </span>
+            )}
+            <div class="min-w-0 flex-1">
+              <p class="text-sm">
+                <span class="text-text">{e.author}</span>
+                <span class="ml-3 font-mono text-[11px] text-muted-soft">{fmt.format(new Date(e.created_at))}</span>
+              </p>
+              <p class="mt-1 break-words text-muted">{e.body}</p>
+              {session?.isAdmin && <GuestbookDelete client:load id={e.id} />}
+            </div>
+          </li>
+        ))
+      }
+      {
+        entries.length === 0 && (
+          <li class="font-mono text-sm text-muted-soft">
+            {hasDatabase() ? "No entries yet. Leave the first note." : "Guestbook storage is not connected yet."}
+          </li>
+        )
+      }
+    </ul>
+  </div>
+</BaseLayout>

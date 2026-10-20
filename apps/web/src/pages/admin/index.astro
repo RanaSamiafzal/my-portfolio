@@ -1,0 +1,111 @@
+---
+import { hasDatabase, listMessages } from "@repo/db";
+import { Card, SectionLabel, Tag, cn } from "@repo/ui";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { AdminSignOut } from "@/components/admin-sign-out";
+import { getSession } from "@/lib/session";
+import { MutationButton } from "@/components/admin/mutation-button";
+
+export const prerender = false;
+
+const session = await getSession(Astro.cookies);
+if (!session?.isAdmin) {
+  return Astro.redirect("/admin/login");
+}
+
+const messages = hasDatabase() ? await listMessages().catch(() => []) : [];
+const unread = messages.filter((m) => !m.read).length;
+const fmt = new Intl.DateTimeFormat("en-GB", {
+  dateStyle: "medium",
+  timeStyle: "short",
+  timeZone: "Asia/Karachi",
+});
+
+const cmsLinks = [
+  { href: "/admin/projects", label: "Projects" },
+  { href: "/admin/profile", label: "Profile" },
+  { href: "/admin/experience", label: "Experience" },
+  { href: "/admin/skills", label: "Skills" },
+  { href: "/admin/faq", label: "FAQ" },
+  { href: "/admin/services", label: "Services" },
+  { href: "/admin/theme", label: "Theme" },
+];
+---
+
+<BaseLayout title="Inbox" description="Admin inbox" canonical="/admin">
+  <div class="border-b border-line bg-bg-1">
+    <div class="container-x flex flex-wrap items-center justify-between gap-4 py-4">
+      <div class="flex flex-wrap items-center gap-1">
+        <a href="/admin" class="mr-3 font-display text-lg tracking-tight">
+          Admin<span class="text-accent">.</span>
+        </a>
+        <a
+          href="/admin"
+          class="rounded-lg px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-accent"
+        >
+          Inbox
+        </a>
+        {
+          cmsLinks.map((l) => (
+            <a
+              href={l.href}
+              class="rounded-lg px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-muted transition-colors hover:bg-white/5 hover:text-accent"
+            >
+              {l.label}
+            </a>
+          ))
+        }
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="/" class="font-mono text-[11px] text-muted-soft hover:text-accent">View site ↗</a>
+        <AdminSignOut client:load />
+      </div>
+    </div>
+  </div>
+
+  <div class="container-x pb-24 pt-16">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <SectionLabel index="AD">Admin</SectionLabel>
+        <h1 class="mt-5 font-medium text-5xl tracking-tight">Inbox</h1>
+        <p class="mt-3 font-mono text-xs text-muted-soft">
+          {messages.length} messages · {unread} unread {!hasDatabase() && "· DATABASE_URL not set"}
+        </p>
+      </div>
+      <AdminSignOut client:load />
+    </div>
+    <div class="mt-10 space-y-3">
+      {
+        messages.map((m) => (
+          <Card className={cn("p-6", !m.read && "border-accent/40")}>
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p class="text-lg text-text">
+                  {!m.read && <span class="mr-2 text-accent">●</span>}
+                  {m.name} {m.company && <span class="text-muted-soft">· {m.company}</span>}
+                </p>
+                <a
+                  href={m.email.includes("@") ? `mailto:${m.email}` : undefined}
+                  class="font-mono text-xs text-accent"
+                >
+                  {m.email}
+                </a>
+              </div>
+              <div class="flex items-center gap-2">
+                {m.interest && <Tag>{m.interest}</Tag>}
+                <Tag>{m.source}</Tag>
+                <span class="font-mono text-[11px] text-muted-soft">{fmt.format(new Date(m.created_at))}</span>
+              </div>
+            </div>
+            <p class="mt-4 whitespace-pre-wrap leading-relaxed text-muted">{m.message}</p>
+            <div class="mt-4 flex flex-wrap gap-2">
+              <MutationButton client:load action="updateMessage" values={{ id: String(m.id), operation: m.read ? "unread" : "read" }}>{m.read ? "Mark unread" : "Mark read"}</MutationButton>
+              <MutationButton client:load action="updateMessage" values={{ id: String(m.id), operation: "delete" }}>Delete</MutationButton>
+            </div>
+          </Card>
+        ))
+      }
+      {messages.length === 0 && <p class="font-mono text-sm text-muted-soft">Inbox zero.</p>}
+    </div>
+  </div>
+</BaseLayout>

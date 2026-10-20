@@ -60,9 +60,9 @@ export function StackUsage({ rows, total }: { rows: Row[]; total: number }) {
                           "h-2 flex-1 rounded-[1px] transition-colors sm:h-3",
                           b < lit && shown
                             ? b === lit - 1
-                              ? "bg-[#b8ffc6] shadow-[0_0_8px_#00ff41]"
+                              ? "bg-accent-soft"
                               : "bg-accent"
-                            : "bg-white/[0.06]",
+                            : "bg-bg-3",
                         )}
                         style={{ transitionDuration: "120ms", transitionDelay: shown ? `${i * 40 + b * 12}ms` : "0ms" }}
                       />
@@ -98,7 +98,7 @@ export function StackUsage({ rows, total }: { rows: Row[]; total: number }) {
         <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 sm:mt-6 sm:block sm:space-y-2 sm:gap-0">
           {current?.projects.map((p) => (
             <li key={p} className="flex items-center gap-2 text-sm text-muted sm:gap-3 sm:text-base">
-              <span className="size-1.5 shrink-0 bg-accent shadow-[0_0_6px_#00ff41]" />
+              <span className="size-1.5 shrink-0 bg-accent" />
               {p}
             </li>
           ))}

@@ -3,8 +3,13 @@
   "ui": "stream",
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"],
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        ".vercel/output/**"
+      ],
       "env": [
         "AUTH_*",
         "BLOB_*",
@@ -12,11 +17,29 @@
         "GITHUB_TOKEN",
         "SMTP_*",
         "MAIL_*",
-        "NEXT_PUBLIC_*"
+        "PUBLIC_*",
+        "RESEND_API_KEY"
       ]
     },
-    "dev": { "cache": false, "persistent": true },
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "env": [
+        "AUTH_*",
+        "BLOB_*",
+        "DATABASE_URL",
+        "GITHUB_TOKEN",
+        "SMTP_*",
+        "MAIL_*",
+        "PUBLIC_*",
+        "RESEND_API_KEY"
+      ]
+    },
     "lint": {},
-    "typecheck": { "dependsOn": ["^typecheck"] }
+    "typecheck": {
+      "dependsOn": [
+        "^typecheck"
+      ]
+    }
   }
 }

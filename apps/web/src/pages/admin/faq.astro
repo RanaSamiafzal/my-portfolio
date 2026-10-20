@@ -1,0 +1,13 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import { getSession } from "@/lib/session";
+import { loadFaq } from "@/lib/content";
+import { FaqForm } from "@/components/admin/faq-form";
+const session = await getSession(Astro.cookies);
+if (!session?.isAdmin) return Astro.redirect("/admin/login");
+const items = await loadFaq();
+---
+<AdminLayout title="FAQ">
+  <h1 class="text-4xl font-semibold tracking-tight">FAQ</h1>
+  <FaqForm client:load items={items} />
+</AdminLayout>

@@ -1,50 +1,58 @@
 # Rana Muhammad Sami — Portfolio
 
-Personal portfolio of a full-stack engineer. A Turborepo monorepo with a Next.js App Router site, a Three.js particle portrait, NextAuth sign-in, and Neon Postgres.
+Astro 5 SSR portfolio with React islands, Tailwind v4, Neon Postgres CMS, Auth.js social sign in, and a private admin inbox. Public pages use a dark studio design with warm white type, acid lime accents and an interactive Three.js/WebGL portrait made from the original desk illustration. The masked photo and depth particles share pointer distortion, click/Enter scatter, shape morphs, keyboard/drag rotation and pause/play. Portrait is the default; compact icon controls replace text tabs. Refresh or Replay plays a circular zoom-out reveal. Reduced motion, mobile rendering and a WebGL fallback are included.
 
 ## Structure
 
-```
-apps/
-  web/                 Next.js 16 site (App Router, Tailwind v4)
-packages/
-  content/             Typed profile, projects, experience, skills, FAQ — single source of truth
-  db/                  Neon Postgres client, queries and SQL migrations
-  ui/                  Shared React primitives (SectionLabel, Tag, Pill, Card…)
-  tsconfig/            Shared TypeScript configs
-```
+- `apps/web`: Astro pages, layouts, HTTP endpoints and React islands.
+- `packages/content`: typed fallback profile, projects, experience, skills and FAQ.
+- `packages/db`: Neon queries, CMS storage, migrations and seed scripts.
+- `packages/mail`: inquiry notifications through Resend or SMTP.
+- `packages/ui`: shared React primitives.
 
-## Routes
+The `_legacy_next_app` directory is a reference archive from the migration. It is excluded from TypeScript checks and has no active routes.
 
-| Route | What it is |
-| --- | --- |
-| `/` | Hero with Three.js particle portrait, services, live GitHub stats, featured work, experience, AGENTS.md, FAQ |
-| `/work` | Filterable project index (by category and technology) |
-| `/work/[slug]` | Case studies (architecture, highlights, decisions) |
-| `/stack` | Skills grouped by area, cross-referenced with projects |
-| `/about` | Bio, at-a-glance card, timeline, education and courses |
-| `/contact` | Contact form (stored in Postgres) and direct channels |
-| `/guestbook` | Sign in with GitHub/Google (NextAuth) and leave a note |
-| `/admin` | Private inbox — login with seeded DB admin (`/admin/login`) |
-| `/llms.txt` | Plain-text profile for AI agents |
-| `/api/hire` | `POST` a JSON brief from an AI agent; lands in the same inbox |
+## Local development
 
-## Getting started
-
-```bash
+```sh
 npm install
-cp apps/web/.env.example apps/web/.env.local   # fill in DATABASE_URL
-npm run db:migrate                              # create tables
-npm run db:seed:admin                           # inject admin from packages/db/seeds/admin.json
-npm run dev                                     # http://localhost:3100
+cp apps/web/.env.example apps/web/.env.local
+npm run dev
 ```
 
-The site runs without most env vars. Contact form + admin inbox need `DATABASE_URL`. Admin credentials live in `packages/db/seeds/admin.json` (seeded into Postgres) — not in `.env`. Guestbook social login optionally needs `AUTH_SECRET` + GitHub/Google OAuth.
+Open http://localhost:3100. Public pages work with fallback content when a database is unavailable. Use Node 22 and the npm version specified in `package.json`.
 
-## Editing content
+For persistent content and an admin account, configure `DATABASE_URL`, edit `packages/db/seeds/admin.json`, then run the following against the intended database:
 
-All copy lives in `packages/content/src`. To add a project, append it to `projects.ts`. Give it a `caseStudy` to generate a `/work/<slug>` page automatically.
+```sh
+npm run db:migrate
+npm run db:seed:admin
+npm run db:seed:content
+```
 
-## Deploying (Vercel)
+Do not reseed an existing database just to apply a visual change. Existing CMS settings override fallback content and theme defaults.
 
-Set **Root Directory** to `apps/web`; Vercel detects Turborepo and builds the workspace packages. Then add these env vars from `.env.example`: `AUTH_SECRET` (optional unless OAuth), `DATABASE_URL`, `NEXT_PUBLIC_SITE_URL`, and optionally `AUTH_GITHUB_ID/SECRET` and/or `AUTH_GOOGLE_ID/SECRET` for guestbook. Seed the admin once against production DB: `npm run db:seed:admin`. Point OAuth callback URLs at `https://<domain>/api/auth/callback/<provider>` if used.
+## Routes and editing
+
+Public routes: `/`, `/work`, `/work/[slug]`, `/stack`, `/about`, `/contact`, `/guestbook`. Case studies render on request so CMS edits and new projects appear without a rebuild.
+
+`/admin/login` uses the seeded database credentials. `/admin` contains inbox read/unread/delete controls and links to projects, profile, experience, skills, FAQ, services and theme editors. CMS forms call authenticated Astro Actions. Image uploads use Vercel Blob when configured; local development falls back to `public/uploads`.
+
+Guestbook sign in uses optional GitHub/Google providers through Auth.js Core. Set `AUTH_GITHUB_ID/SECRET` or `AUTH_GOOGLE_ID/SECRET`; callback URLs remain `/api/auth/callback/github` and `/api/auth/callback/google`. Guestbook entries are limited to three per email per ten minutes. Without provider credentials, the guestbook remains readable.
+
+SEO routes: `/sitemap.xml`, `/robots.txt`, `/llms.txt`. Agents can read the contract at `GET /api/hire` and send a brief with `POST /api/hire`. Contact submissions use `POST /api/contact`.
+
+## Validation
+
+```sh
+npm run typecheck
+npm run build
+```
+
+## Vercel
+
+Set the project Root Directory to `apps/web` and the framework to **Astro**. Build with `npm run build`; the Vercel adapter creates `.vercel/output`. `astro preview` cannot serve the Vercel adapter locally; use `npm run dev` for development and a Vercel preview for deployment validation.
+
+Configure `PUBLIC_SITE_URL` with the public HTTPS origin, `DATABASE_URL`, and **`AUTH_SECRET`** (required for production sessions; generate with `openssl rand -base64 32`). Configure optional OAuth credentials, `BLOB_READ_WRITE_TOKEN`, and `RESEND_API_KEY` with `MAIL_FROM/MAIL_TO` or SMTP settings. Never rely on local filesystem uploads on Vercel.
+
+Before production cutover, verify a Vercel preview: credentials login, CMS save and public refresh, inbox controls, Blob uploads, contact delivery, hire delivery, and OAuth callback plus guestbook posting. See [migration status](docs/ASTRO_MIGRATION_STATUS.md) for the current checkpoint.
